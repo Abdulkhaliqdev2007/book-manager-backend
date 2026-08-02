@@ -9,14 +9,16 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 
 const bookRoutes = require('./routes/bookRoutes');
+const authRoutes = require('./routes/authRoutes'); // ✅ Added
 
 
 const app = express();
 
 
 // Connect MongoDB
-connectDB();
-
+connectDB().catch((err) => {
+  console.error("MongoDB connection failed:", err.message);
+});
 
 
 // ============================================
@@ -26,10 +28,9 @@ connectDB();
 app.use(helmet());
 
 
-// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: {
     success: false,
     message: 'Too many requests, please try again later.',
@@ -40,23 +41,15 @@ app.use(limiter);
 
 
 
-
 // ============================================
 // CORS CONFIGURATION
 // ============================================
 
 const allowedOrigins = [
-
-  // Local development
   'http://localhost:5173',
-
-  // If using CRA
   'http://localhost:3000',
 
-  // Add your Vercel frontend URL here
-  // Example:
-  // 'https://book-manager.vercel.app',
-
+  // Add Vercel frontend URL later
 ];
 
 
@@ -64,16 +57,13 @@ const corsOptions = {
 
   origin: (origin, callback) => {
 
-    // Allow Postman/mobile/no origin requests
     if (!origin) {
       return callback(null, true);
     }
 
 
     if (allowedOrigins.includes(origin)) {
-
       return callback(null, true);
-
     }
 
 
@@ -83,9 +73,7 @@ const corsOptions = {
 
   },
 
-
   credentials: true,
-
 
   methods: [
     'GET',
@@ -94,7 +82,6 @@ const corsOptions = {
     'DELETE',
     'OPTIONS'
   ],
-
 
   allowedHeaders: [
     'Content-Type',
@@ -105,8 +92,6 @@ const corsOptions = {
 
 
 app.use(cors(corsOptions));
-
-
 
 
 
@@ -130,9 +115,6 @@ app.use(
 
 
 
-
-
-
 // ============================================
 // ROUTES
 // ============================================
@@ -148,7 +130,8 @@ app.get('/', (req, res) => {
 
     endpoints: {
 
-      books: '/api/books'
+      books: '/api/books',
+      auth: '/api/auth'   // ✅ Added
 
     }
 
@@ -158,11 +141,18 @@ app.get('/', (req, res) => {
 
 
 
+// Books Routes
 app.use(
   '/api/books',
   bookRoutes
 );
 
+
+// Auth Routes ✅ Added
+app.use(
+  '/api/auth',
+  authRoutes
+);
 
 
 
@@ -171,7 +161,6 @@ app.use(
 // ============================================
 // 404 HANDLER
 // ============================================
-
 
 app.use((req, res) => {
 
@@ -188,8 +177,6 @@ app.use((req, res) => {
 
 
 
-
-
 // ============================================
 // GLOBAL ERROR HANDLER
 // ============================================
@@ -198,21 +185,12 @@ app.use(errorHandler);
 
 
 
-
-
-
 // ============================================
 // SERVER START
 // ============================================
 
-
 const PORT = process.env.PORT || 5000;
 
-
 app.listen(PORT, () => {
-
-  console.log(
-    `🚀 Server running on port ${PORT}`
-  );
-
+  console.log(`Server running on port ${PORT}`);
 });
