@@ -144,6 +144,11 @@ Protected routes require a JWT token in the request header:
 ```text
 Authorization: Bearer <token>
 ```
+## Frontend Repository
+
+Frontend application:
+
+https://github.com/Abdulkhaliqdev2007/book-manager-frontend
 
 ## Deployment
 
