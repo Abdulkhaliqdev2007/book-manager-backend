@@ -74,7 +74,7 @@ backend/
 Clone the repository:
 
 ```bash
-git clone <your-backend-repository-url>
+https://github.com/Abdulkhaliqdev2007/book-manager-backend.git
 ```
 
 Navigate to the backend folder:
@@ -164,4 +164,5 @@ Make sure to configure environment variables on the deployment platform.
 * Add automated API testing
 
 ## Author
-Abdul Khaliq
+ Hafiz Abdul Khaliq
+ GitHub: Abdulkhaliqdev2007
