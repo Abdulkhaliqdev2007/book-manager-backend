@@ -88,6 +88,11 @@ Install dependencies:
 ```bash
 npm install
 ```
+## Frontend Repository
+
+Frontend application:
+
+https://github.com/Abdulkhaliqdev2007/book-manager-frontend
 
 ## Environment Variables
 

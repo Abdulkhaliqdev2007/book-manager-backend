@@ -11,10 +11,11 @@ const getBooks = async (req, res) => {
     res.status(200).json(books);
 
   } catch (error) {
-    res.status(500).json({
-      message: error.message
-    });
-  }
+  res.status(400).json({
+    success: false,
+    message: error.message
+  });
+}
 };
 
 
@@ -34,28 +35,76 @@ const getBookById = async (req, res) => {
     res.status(200).json(book);
 
   } catch (error) {
-    res.status(500).json({
-      message: error.message
-    });
-  }
+  res.status(400).json({
+    success: false,
+    message: error.message
+  });
+}
 };
-
 
 // @desc    Create book
 // @route   POST /api/books
 // @access  Private
 const createBook = async (req, res) => {
   try {
+    const {
+      title,
+      author,
+      category,
+      publishedDate,
+      price,
+      description
+    } = req.body;
+
+    // Server-side validation
+    if (!title) {
+      return res.status(400).json({
+        message: "Title is required"
+      });
+    }
+
+    if (!author) {
+      return res.status(400).json({
+        message: "Author is required"
+      });
+    }
+
+    if (!category) {
+      return res.status(400).json({
+        message: "Category is required"
+      });
+    }
+
+    if (!publishedDate) {
+      return res.status(400).json({
+        message: "Published date is required"
+      });
+    }
+
+    // Description is optional
+
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Cover image is required"
+      });
+    }
 
     const book = await Book.create({
-      ...req.body,
+      title,
+      author,
+      category,
+      publishedDate,
+      price,
+      description: description || '',
+      coverImage: req.file.path,
       user: req.user._id
     });
 
     res.status(201).json(book);
 
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
+      success: false,
       message: error.message
     });
   }
@@ -77,9 +126,19 @@ const updateBook = async (req, res) => {
     }
 
 
+    const updateData = {
+      ...req.body
+    };
+
+
+    if (req.file) {
+      updateData.coverImage = req.file.path;
+    }
+
+
     const updatedBook = await Book.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       {
         new: true,
         runValidators: true
@@ -91,12 +150,11 @@ const updateBook = async (req, res) => {
 
 
   } catch (error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
+  res.status(400).json({
+    success: false,
+    message: error.message
+  });
+}
 };
 
 
@@ -125,13 +183,14 @@ const deleteBook = async (req, res) => {
     });
 
 
-  } catch (error) {
+  }catch (error) {
+  res.status(400).json({
+    success: false,
+    message: error.message
+  });
+}
 
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
+  
 };
 
 

@@ -22,8 +22,22 @@ router.get('/:id', getBookById);
 
 
 // Protected Routes
-router.post('/', protect, createBook);
-router.put('/:id', protect, updateBook);
+const upload = require('../middleware/upload');
+
+
+// Protected Routes
+router.post(
+  '/',
+  protect,
+  upload.single('coverImage'),
+  createBook
+);
+router.put(
+  '/:id',
+  protect,
+  upload.single('coverImage'),
+  updateBook
+);
 router.delete('/:id', protect, deleteBook);
 
 
