@@ -57,12 +57,10 @@ description: {
   default: '',
 },
 
-
-    coverImage: {
-      type: String,
-      required: [true, 'Cover image is required'],
-    },
-
+coverImage: {
+  type: String,
+  default: '',
+},
 
     user: {
       type: mongoose.Schema.Types.ObjectId,

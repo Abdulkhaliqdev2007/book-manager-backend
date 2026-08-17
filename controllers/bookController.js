@@ -1,21 +1,20 @@
 const Book = require('../models/Book');
 
-
 // @desc    Get all books
 // @route   GET /api/books
 // @access  Public
 const getBooks = async (req, res) => {
   try {
     const books = await Book.find();
-    
+
     res.status(200).json(books);
 
   } catch (error) {
-  res.status(400).json({
-    success: false,
-    message: error.message
-  });
-}
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
 };
 
 
@@ -35,18 +34,23 @@ const getBookById = async (req, res) => {
     res.status(200).json(book);
 
   } catch (error) {
-  res.status(400).json({
-    success: false,
-    message: error.message
-  });
-}
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
 };
 
 // @desc    Create book
 // @route   POST /api/books
 // @access  Private
+
 const createBook = async (req, res) => {
+
+
+
   try {
+
     const {
       title,
       author,
@@ -56,12 +60,14 @@ const createBook = async (req, res) => {
       description
     } = req.body;
 
-    // Server-side validation
+    // Server-side validatio\\
+
     if (!title) {
       return res.status(400).json({
         message: "Title is required"
       });
     }
+
 
     if (!author) {
       return res.status(400).json({
@@ -69,11 +75,13 @@ const createBook = async (req, res) => {
       });
     }
 
+
     if (!category) {
       return res.status(400).json({
         message: "Category is required"
       });
     }
+
 
     if (!publishedDate) {
       return res.status(400).json({
@@ -81,32 +89,43 @@ const createBook = async (req, res) => {
       });
     }
 
-    // Description is optional
 
-    if (!req.file) {
-      return res.status(400).json({
-        message: "Cover image is required"
-      });
-    }
+    // Cover image is OPTIONAL
+    // No validation required here
+
 
     const book = await Book.create({
+
       title,
+
       author,
+
       category,
+
       publishedDate,
+
       price,
+
       description: description || '',
-      coverImage: req.file.path,
+
+      coverImage: req.file
+        ? req.file.path
+        : '',
+
       user: req.user._id
+
     });
+
 
     res.status(201).json(book);
 
   } catch (error) {
+
     res.status(400).json({
       success: false,
       message: error.message
     });
+
   }
 };
 
@@ -118,6 +137,7 @@ const updateBook = async (req, res) => {
   try {
 
     const book = await Book.findById(req.params.id);
+
 
     if (!book) {
       return res.status(404).json({
@@ -131,6 +151,7 @@ const updateBook = async (req, res) => {
     };
 
 
+    // Only update image if a new image was uploaded
     if (req.file) {
       updateData.coverImage = req.file.path;
     }
@@ -148,15 +169,15 @@ const updateBook = async (req, res) => {
 
     res.status(200).json(updatedBook);
 
-
   } catch (error) {
-  res.status(400).json({
-    success: false,
-    message: error.message
-  });
-}
-};
 
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+
+  }
+};
 
 
 // @desc    Delete book
@@ -182,17 +203,15 @@ const deleteBook = async (req, res) => {
       message: "Book deleted successfully"
     });
 
+  } catch (error) {
 
-  }catch (error) {
-  res.status(400).json({
-    success: false,
-    message: error.message
-  });
-}
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
 
-  
+  }
 };
-
 
 
 module.exports = {
