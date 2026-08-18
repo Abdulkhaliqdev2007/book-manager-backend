@@ -1,37 +1,23 @@
-# 📚 Book Manager — Week 3 Backend
+# 📚 Book Manager – Backend
 
-Backend API for the Book Manager application built with **Node.js, Express.js, and MongoDB**.
-
-This backend provides authentication and RESTful APIs for managing books and works with the Week 3 React frontend.
+A RESTful backend API for the Book Manager application, built with **Node.js, Express, MongoDB, and Mongoose**. It provides authentication, protected book management endpoints, image uploads, validation, security middleware, and error handling.
 
 ## ✨ Features
 
-### 🔐 Authentication
-
-* User registration
-* User login
-* JWT-based authentication
-* Protected API routes
-* Password hashing with bcrypt
-
-### 📚 Book Management API
-
-* Create books
-* Get all books
-* Get a single book
-* Update books
-* Delete books
-* Book cover image upload support
-* User-specific book management
-
-### 🛡️ Security & Performance
-
-* Helmet security middleware
-* CORS configuration
-* Rate limiting
-* Environment variable support
-* Centralized error handling
-* Request validation
+* 🔐 User authentication with JWT
+* 👤 User signup and login
+* 📚 Full CRUD operations for books
+* 🖼️ Book cover image uploads using Multer
+* 💾 Local image storage in the `uploads` directory
+* ✅ Request and server-side validation
+* 🔒 Protected book creation, update, and delete routes
+* 🌐 CORS configuration
+* 🛡️ Helmet security middleware
+* 🚦 Rate limiting
+* ⚠️ Centralized error handling
+* 📅 Book published date support
+* 💵 Book price support
+* 🗂️ Book categories
 
 ## 🛠️ Tech Stack
 
@@ -39,135 +25,211 @@ This backend provides authentication and RESTful APIs for managing books and wor
 * Express.js
 * MongoDB
 * Mongoose
-* JSON Web Token (JWT)
-* bcrypt
+* JWT
+* Multer
 * dotenv
 * CORS
 * Helmet
-* Express Rate Limit
-* Multer
+* express-rate-limit
+* Nodemon
 
 ## 📁 Project Structure
 
 ```text
 backend/
-├── api/
 ├── config/
 │   └── db.js
+│
 ├── controllers/
 │   ├── authController.js
 │   └── bookController.js
+│
 ├── middleware/
 │   ├── authMiddleware.js
-│   └── errorHandler.js
+│   ├── errorHandler.js
+│   └── upload.js
+│
 ├── models/
 │   ├── User.js
 │   └── Book.js
+│
 ├── routes/
 │   ├── authRoutes.js
 │   └── bookRoutes.js
+│
+├── services/
+│   └── ...
+│
 ├── uploads/
-├── .env.example
+│
+├── .env
 ├── server.js
-└── package.json
+├── package.json
+└── README.md
 ```
 
-## 🚀 Installation
+## 🚀 Getting Started
 
-Clone the repository:
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Abdulkhaliqdev2007/book-manager-week3-backend.git
+git clone https://github.com/Abdulkhaliqdev2007/book-manager-backend.git
 ```
 
-Navigate to the project:
+### 2. Open the project
 
 ```bash
-cd book-manager-week3-backend
+cd book-manager-backend
 ```
 
-Install dependencies:
+### 3. Install dependencies
 
 ```bash
 npm install
 ```
 
-## 🔐 Environment Variables
+### 4. Create an environment file
 
-Create a `.env` file in the project root.
-
-Example:
+Create a `.env` file in the project root:
 
 ```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
+JWT_SECRET=your_jwt_secret
 ```
 
-Do not commit `.env` or any real credentials to GitHub.
+Do not commit your `.env` file to GitHub.
 
-## ▶️ Run the Server
-
-Start the development server:
+### 5. Start the development server
 
 ```bash
 npm run dev
 ```
 
-The API will normally run at:
+The API will usually run at:
 
 ```text
 http://localhost:5000
 ```
 
-## 🔗 Frontend Repository
-
-Week 3 frontend:
-
-https://github.com/Abdulkhaliqdev2007/book-manager-week3-frontend
-
 ## 📡 API Endpoints
 
 ### Authentication
 
-| Method | Endpoint           | Description                    |
-| ------ | ------------------ | ------------------------------ |
-| POST   | `/api/auth/signup` | Register a new user            |
-| POST   | `/api/auth/login`  | Login user                     |
-| GET    | `/api/auth/me`     | Get current authenticated user |
+```text
+POST /api/auth/signup
+POST /api/auth/login
+GET  /api/auth/me
+```
 
 ### Books
 
-| Method | Endpoint         | Description       |
-| ------ | ---------------- | ----------------- |
-| GET    | `/api/books`     | Get all books     |
-| GET    | `/api/books/:id` | Get a single book |
-| POST   | `/api/books`     | Create a book     |
-| PUT    | `/api/books/:id` | Update a book     |
-| DELETE | `/api/books/:id` | Delete a book     |
-
-## 🔑 Authentication
-
-Protected endpoints require a JWT token in the request header:
-
 ```text
-Authorization: Bearer <token>
+GET    /api/books
+GET    /api/books/:id
+POST   /api/books
+PUT    /api/books/:id
+DELETE /api/books/:id
 ```
 
-## 🎯 Week 3 Integration
+### Access
 
-This backend is used by the Week 3 React frontend, which introduces:
+Book creation, updating, and deletion require authentication.
 
-* React Context API
-* Shared global state
-* Centralized data-fetching patterns
-* Loading states
-* Empty states
-* Improved error handling
-* Search and sort functionality
+## 🖼️ Image Upload
+
+Book cover images are uploaded using **Multer** and stored locally in the backend's `uploads` directory.
+
+### Upload flow
+
+```text
+Frontend
+   ↓
+FormData
+   ↓
+POST /api/books
+   ↓
+Multer
+   ↓
+uploads/
+   ↓
+MongoDB stores file path
+   ↓
+Frontend renders book cover
+```
+
+The uploaded image path is stored with the book record and served through the backend's static uploads route.
+
+## 🔐 Authentication
+
+The backend uses **JSON Web Tokens (JWT)** for authentication.
+
+Authenticated requests include the token so protected routes can verify the current user.
+
+Protected operations include:
+
+* Creating books
+* Updating books
+* Deleting books
+
+## 🛡️ Security
+
+The backend includes:
+
+* Helmet for HTTP security headers
+* CORS configuration
+* Express rate limiting
+* Environment variables for secrets
+* Authentication middleware
+* Server-side request validation
+
+## 🗄️ Database
+
+The application uses **MongoDB** with **Mongoose** for database operations.
+
+Book records can contain:
+
+```text
+title
+author
+category
+publishedDate
+price
+description
+coverImage
+user
+```
+
+## 🌐 Frontend
+
+This backend is designed to work with the Book Manager React frontend.
+
+Frontend repository:
+
+```text
+https://github.com/Abdulkhaliqdev2007/book-manager-frontend
+```
+
+## 🧪 Development
+
+Start the backend with:
+
+```bash
+npm run dev
+```
+
+Nodemon automatically restarts the server when source files change.
 
 ## 👨‍💻 Author
 
-**Hafiz Abdul Khaliq**
+**Abdul Khaliq**
 
-GitHub: https://github.com/Abdulkhaliqdev2007
+GitHub:
+
+```text
+https://github.com/Abdulkhaliqdev2007
+```
+
+---
+
+⭐ Feel free to explore the project and the connected frontend repository.
