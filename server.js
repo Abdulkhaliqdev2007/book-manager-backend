@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-
+const dashboardRoutes = require('./routes/dashboardRoutes');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -51,9 +51,8 @@ app.use(limiter);
 
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:5174',
   'http://localhost:3000',
-
-  // Add Vercel frontend URL later
 ];
 
 
@@ -125,9 +124,6 @@ app.use('/uploads', (req, res, next) => {
 });
 
 app.use('/uploads', express.static('uploads'));
-app.use('/uploads', express.static('uploads'));
-
-
 // ============================================
 // ROUTES
 // ============================================
@@ -165,6 +161,11 @@ app.use(
 app.use(
   '/api/auth',
   authRoutes
+);
+// Dashboard Routes
+app.use(
+  '/api/dashboard',
+  dashboardRoutes
 );
 
 
