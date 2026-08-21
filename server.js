@@ -16,10 +16,11 @@ const app = express();
 
 
 // Connect MongoDB
-connectDB().catch((err) => {
-  console.error("MongoDB connection failed:", err.message);
-});
-
+if (require.main === module) {
+  connectDB().catch((err) => {
+    console.error("MongoDB connection failed:", err.message);
+  });
+}
 
 // ============================================
 // SECURITY MIDDLEWARE
@@ -205,6 +206,10 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;

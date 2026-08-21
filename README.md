@@ -1,173 +1,217 @@
-# 📚 Book Manager — Week 3 Backend
+# 📚 Book Manager — Week 5
 
-Backend API for the Book Manager application built with **Node.js, Express.js, and MongoDB**.
+A full-stack Book Manager application built with React, Context API, Tailwind CSS, Node.js, Express, and MongoDB.
 
-This backend provides authentication and RESTful APIs for managing books and works with the Week 3 React frontend.
+This Week 5 version focuses on automated testing, frontend component testing, backend API testing, end-to-end testing, and production build verification.
 
 ## ✨ Features
 
-### 🔐 Authentication
+### Frontend
 
-* User registration
-* User login
-* JWT-based authentication
-* Protected API routes
-* Password hashing with bcrypt
+- 🔐 User authentication with Login and Signup
+- 📚 Book management with CRUD operations
+- 🔍 Search books by title or author
+- ↕️ Sort books by title and publication date
+- 🖼️ Book cover image upload
+- ✅ Form validation
+- ⏳ Loading states
+- ❌ Error handling
+- 📊 Dashboard with data visualization
+- 🌐 React Context API for global book state
+- 📱 Responsive UI
 
-### 📚 Book Management API
+### Backend
 
-* Create books
-* Get all books
-* Get a single book
-* Update books
-* Delete books
-* Book cover image upload support
-* User-specific book management
+- 🔐 JWT authentication
+- 👤 User registration and login
+- 📚 Book CRUD API
+- 🖼️ Image upload using Multer
+- 📊 Dashboard statistics API
+- 🛡️ Protected routes
+- 🔒 Helmet security middleware
+- 🚦 Rate limiting
+- 🌐 CORS configuration
+- 🗄️ MongoDB with Mongoose
 
-### 🛡️ Security & Performance
+## 🧪 Automated Testing
 
-* Helmet security middleware
-* CORS configuration
-* Rate limiting
-* Environment variable support
-* Centralized error handling
-* Request validation
+The project includes frontend component tests, backend API tests, and end-to-end tests.
 
-## 🛠️ Tech Stack
+### Frontend Tests
 
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* JSON Web Token (JWT)
-* bcrypt
-* dotenv
-* CORS
-* Helmet
-* Express Rate Limit
-* Multer
+Frontend component tests are written using Vitest and React Testing Library.
 
-## 📁 Project Structure
-
-```text
-backend/
-├── api/
-├── config/
-│   └── db.js
-├── controllers/
-│   ├── authController.js
-│   └── bookController.js
-├── middleware/
-│   ├── authMiddleware.js
-│   └── errorHandler.js
-├── models/
-│   ├── User.js
-│   └── Book.js
-├── routes/
-│   ├── authRoutes.js
-│   └── bookRoutes.js
-├── uploads/
-├── .env.example
-├── server.js
-└── package.json
-```
-
-## 🚀 Installation
-
-Clone the repository:
+Run the frontend tests:
 
 ```bash
-git clone https://github.com/Abdulkhaliqdev2007/book-manager-week3-backend.git
-```
+npm run test:run
+Current result:
+
+Test Files: 2 passed
+Tests: 5 passed
+
+The frontend tests cover:
+
+BookCard component rendering
+BookCard interactions
+BookForm validation
+BookForm submission
+Backend Tests
+
+Backend API tests are written using Jest and Supertest.
+
+Run the backend tests:
+
+npm test
+
+Current result:
+
+Test Suites: 3 passed
+Tests: 12 passed
+
+The backend tests cover:
+
+API information endpoint
+Invalid routes
+Authentication validation
+Signup validation
+Existing user handling
+Login validation
+Invalid login credentials
+Book listing
+Book retrieval
+Book not found cases
+Unauthorized book creation
+Unauthorized book deletion
+End-to-End Tests
+
+End-to-end tests are written using Playwright.
+
+Run the E2E tests:
+
+npx playwright test
+
+Current result:
+
+3 passed
+
+The E2E tests cover:
+
+Login page rendering
+Login form validation
+Signup page rendering
+🏗️ Production Build
+
+Verify the production build:
+
+npm run build
+
+The production build completes successfully.
+
+✅ Complete Frontend Verification
+
+Run all frontend checks:
+
+npm run test:run
+npx playwright test
+npm run build
+✅ Complete Backend Verification
+
+Run:
+
+npm test
+
+All tests should pass successfully before submitting the project.
+
+🛠️ Tech Stack
+Frontend
+React
+Vite
+React Context API
+React Router DOM
+Tailwind CSS
+Axios
+Lucide React
+Vitest
+React Testing Library
+Playwright
+Backend
+Node.js
+Express.js
+MongoDB
+Mongoose
+JWT
+Multer
+Jest
+Supertest
+📁 Project Structure
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── BookCard.jsx
+│   │   ├── BookForm.jsx
+│   │   └── ...
+│   ├── context/
+│   ├── hooks/
+│   ├── pages/
+│   ├── services/
+│   └── App.jsx
+│
+├── e2e/
+│   └── book-manager.spec.js
+│
+├── playwright.config.js
+├── vite.config.js
+└── package.json
+🚀 Installation
+
+Clone the frontend repository:
+
+git clone https://github.com/Abdulkhaliqdev2007/book-manager-week5-frontend.git
 
 Navigate to the project:
 
-```bash
-cd book-manager-week3-backend
-```
+cd book-manager-week5-frontend
 
 Install dependencies:
 
-```bash
 npm install
-```
+▶️ Run the Application
 
-## 🔐 Environment Variables
+Start the frontend development server:
 
-Create a `.env` file in the project root.
-
-Example:
-
-```env
-PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-```
-
-Do not commit `.env` or any real credentials to GitHub.
-
-## ▶️ Run the Server
-
-Start the development server:
-
-```bash
 npm run dev
-```
 
-The API will normally run at:
+The frontend normally runs at:
 
-```text
+http://localhost:5173
+
+Make sure the backend server is also running on:
+
 http://localhost:5000
-```
+🔗 Backend Repository
 
-## 🔗 Frontend Repository
+Backend API repository:
 
-Week 3 frontend:
+https://github.com/Abdulkhaliqdev2007/book-manager-week5-backend
 
-https://github.com/Abdulkhaliqdev2007/book-manager-week3-frontend
+🎯 Week 5 Learning Goals
 
-## 📡 API Endpoints
+This project demonstrates:
 
-### Authentication
+Automated frontend testing
+Component testing with Vitest
+Form validation testing
+Backend API testing with Jest
+API testing with Supertest
+Happy-path and failure-case testing
+End-to-end testing with Playwright
+Production build verification
+Full-stack application testing workflow
+👨‍💻 Author
 
-| Method | Endpoint           | Description                    |
-| ------ | ------------------ | ------------------------------ |
-| POST   | `/api/auth/signup` | Register a new user            |
-| POST   | `/api/auth/login`  | Login user                     |
-| GET    | `/api/auth/me`     | Get current authenticated user |
+Hafiz Abdul Khaliq
 
-### Books
+GitHub:
 
-| Method | Endpoint         | Description       |
-| ------ | ---------------- | ----------------- |
-| GET    | `/api/books`     | Get all books     |
-| GET    | `/api/books/:id` | Get a single book |
-| POST   | `/api/books`     | Create a book     |
-| PUT    | `/api/books/:id` | Update a book     |
-| DELETE | `/api/books/:id` | Delete a book     |
-
-## 🔑 Authentication
-
-Protected endpoints require a JWT token in the request header:
-
-```text
-Authorization: Bearer <token>
-```
-
-## 🎯 Week 3 Integration
-
-This backend is used by the Week 3 React frontend, which introduces:
-
-* React Context API
-* Shared global state
-* Centralized data-fetching patterns
-* Loading states
-* Empty states
-* Improved error handling
-* Search and sort functionality
-
-## 👨‍💻 Author
-
-**Hafiz Abdul Khaliq**
-
-GitHub: https://github.com/Abdulkhaliqdev2007
+https://github.com/Abdulkhaliqdev2007
