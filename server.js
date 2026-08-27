@@ -49,14 +49,13 @@ app.use(limiter);
 // ============================================
 // CORS CONFIGURATION
 // ============================================
-
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
+  'http://localhost:4173',
   'http://localhost:3000',
   'https://book-manager-week5-2-frontend.onrender.com',
 ];
-
 
 const corsOptions = {
 
