@@ -1,85 +1,160 @@
-# 📚 Book Manager – Backend
+# 📚 Book Manager – Week 5 Backend
 
-A RESTful backend API for the Book Manager application, built with **Node.js, Express, MongoDB, and Mongoose**. It provides authentication, protected book management endpoints, image uploads, validation, security middleware, and error handling.
+A production-ready REST API backend for the **Book Manager** full-stack application, built with **Node.js, Express.js, MongoDB, Mongoose, JWT, Multer, Jest, and Supertest**.
+
+This backend provides authentication, book management, dashboard statistics, reviews, image uploads, security middleware, automated testing, and production deployment.
+
+---
 
 ## ✨ Features
 
-* 🔐 User authentication with JWT
-* 👤 User signup and login
-* 📚 Full CRUD operations for books
-* 🖼️ Book cover image uploads using Multer
-* 💾 Local image storage in the `uploads` directory
-* ✅ Request and server-side validation
-* 🔒 Protected book creation, update, and delete routes
-* 🌐 CORS configuration
-* 🛡️ Helmet security middleware
-* 🚦 Rate limiting
-* ⚠️ Centralized error handling
-* 📅 Book published date support
-* 💵 Book price support
-* 🗂️ Book categories
+### 🔐 Authentication
+
+* User registration
+* User login
+* JWT authentication
+* Protected routes
+* Current user verification
+* Secure password hashing
+* User roles (`user` / `admin`)
+
+### 📚 Book Management
+
+* Create books
+* Get all books
+* Get a single book
+* Update books
+* Delete books
+* Search and sorting support
+* Book categories
+* Published date
+* Price and description
+* Book cover image uploads
+
+### 📊 Dashboard
+
+* Dashboard statistics
+* Total books
+* Total book value
+* Books by category
+* Books added over time
+* Average price by category
+
+### ⭐ Reviews
+
+* Create reviews
+* Get all reviews
+* Get reviews for a specific book
+* Get a single review
+* Update reviews
+* Delete reviews
+* Rating validation from 1–5
+* Prevent duplicate reviews by the same user
+* Review ownership protection
+
+### 🖼️ File Uploads
+
+* Image uploads using Multer
+* Local upload storage
+* Static serving of uploaded images
+* Cross-origin access for uploaded resources
+
+### 🛡️ Security
+
+* Helmet security middleware
+* CORS configuration
+* Express rate limiting
+* JWT authentication
+* Protected routes
+* Request body size limits
+* Centralized error handling
+* Server-side validation
+
+---
 
 ## 🛠️ Tech Stack
+
+### Backend
 
 * Node.js
 * Express.js
 * MongoDB
 * Mongoose
 * JWT
+* bcryptjs
 * Multer
 * dotenv
 * CORS
 * Helmet
-* express-rate-limit
-* Nodemon
+* Express Rate Limit
+
+### Testing
+
+* Jest
+* Supertest
+
+### Deployment
+
+* Render
+* MongoDB Atlas
+
+---
 
 ## 📁 Project Structure
 
 ```text
 backend/
+│
 ├── config/
 │   └── db.js
 │
 ├── controllers/
 │   ├── authController.js
-│   └── bookController.js
+│   ├── bookController.js
+│   └── reviewController.js
 │
 ├── middleware/
-│   ├── authMiddleware.js
+│   ├── auth.js
 │   ├── errorHandler.js
 │   └── upload.js
 │
 ├── models/
 │   ├── User.js
-│   └── Book.js
+│   ├── Book.js
+│   └── Review.js
 │
 ├── routes/
 │   ├── authRoutes.js
-│   └── bookRoutes.js
+│   ├── bookRoutes.js
+│   └── reviewRoutes.js
 │
-├── services/
-│   └── ...
+├── __tests__/
+│   ├── auth.test.js
+│   ├── books.test.js
+│   ├── review.test.js
+│   └── server.test.js
 │
 ├── uploads/
 │
-├── .env
 ├── server.js
 ├── package.json
 └── README.md
 ```
+
+---
 
 ## 🚀 Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Abdulkhaliqdev2007/book-manager-backend.git
+git clone https://github.com/Abdulkhaliqdev2007/book-manager-week5-2-backend.git
 ```
 
 ### 2. Open the project
 
 ```bash
-cd book-manager-backend
+cd book-manager-week5-2-backend
 ```
 
 ### 3. Install dependencies
@@ -88,9 +163,9 @@ cd book-manager-backend
 npm install
 ```
 
-### 4. Create an environment file
+### 4. Create environment variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the backend root:
 
 ```env
 PORT=5000
@@ -98,7 +173,7 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 ```
 
-Do not commit your `.env` file to GitHub.
+Never commit `.env` or private credentials to GitHub.
 
 ### 5. Start the development server
 
@@ -106,11 +181,19 @@ Do not commit your `.env` file to GitHub.
 npm run dev
 ```
 
-The API will usually run at:
+The backend normally runs at:
 
 ```text
 http://localhost:5000
 ```
+
+### 6. Start production server
+
+```bash
+npm start
+```
+
+---
 
 ## 📡 API Endpoints
 
@@ -132,93 +215,232 @@ PUT    /api/books/:id
 DELETE /api/books/:id
 ```
 
-### Access
+Creating, updating, and deleting books require authentication and admin access.
 
-Book creation, updating, and deletion require authentication.
-
-## 🖼️ Image Upload
-
-Book cover images are uploaded using **Multer** and stored locally in the backend's `uploads` directory.
-
-### Upload flow
+### Reviews
 
 ```text
-Frontend
-   ↓
-FormData
-   ↓
-POST /api/books
-   ↓
-Multer
-   ↓
-uploads/
-   ↓
-MongoDB stores file path
-   ↓
-Frontend renders book cover
+GET    /api/reviews
+GET    /api/reviews/book/:bookId
+GET    /api/reviews/:id
+POST   /api/reviews
+PUT    /api/reviews/:id
+DELETE /api/reviews/:id
 ```
 
-The uploaded image path is stored with the book record and served through the backend's static uploads route.
+### Dashboard
+
+```text
+GET /api/dashboard/stats
+```
+
+### API Information
+
+```text
+GET /
+```
+
+---
+
+## 🖼️ Image Upload Flow
+
+```text
+React Frontend
+      ↓
+   FormData
+      ↓
+POST /api/books
+      ↓
+    Multer
+      ↓
+   uploads/
+      ↓
+ MongoDB stores file path
+      ↓
+Frontend displays cover image
+```
+
+Uploaded images are served through:
+
+```text
+/uploads/<filename>
+```
+
+---
 
 ## 🔐 Authentication
 
-The backend uses **JSON Web Tokens (JWT)** for authentication.
+The backend uses **JSON Web Tokens (JWT)**.
 
-Authenticated requests include the token so protected routes can verify the current user.
+Protected requests send the token using the Authorization header:
+
+```text
+Authorization: Bearer <token>
+```
 
 Protected operations include:
 
 * Creating books
 * Updating books
 * Deleting books
+* Creating reviews
+* Updating reviews
+* Deleting reviews
 
-## 🛡️ Security
+---
 
-The backend includes:
+## ⭐ Review System
 
-* Helmet for HTTP security headers
-* CORS configuration
-* Express rate limiting
-* Environment variables for secrets
-* Authentication middleware
-* Server-side request validation
-
-## 🗄️ Database
-
-The application uses **MongoDB** with **Mongoose** for database operations.
-
-Book records can contain:
+Each review contains:
 
 ```text
-title
-author
-category
-publishedDate
-price
-description
-coverImage
+book
 user
+rating
+comment
+createdAt
+updatedAt
 ```
 
-## 🌐 Frontend
+Ratings must be whole numbers between **1 and 5**.
 
-This backend is designed to work with the Book Manager React frontend.
+A user can review a particular book only once.
 
-Frontend repository:
+Review updates and deletions are restricted to the review owner or an administrator.
 
-```text
-https://github.com/Abdulkhaliqdev2007/book-manager-frontend
-```
+---
 
-## 🧪 Development
+## 🧪 Automated Testing
 
-Start the backend with:
+The backend uses **Jest** and **Supertest** for API testing.
+
+Run tests with:
 
 ```bash
-npm run dev
+npm test
 ```
 
-Nodemon automatically restarts the server when source files change.
+The test suite covers areas including:
+
+* API information endpoint
+* Invalid routes
+* Authentication validation
+* Signup validation
+* Existing user handling
+* Login validation
+* Invalid login credentials
+* Book listing
+* Book retrieval
+* Book not found cases
+* Unauthorized book operations
+* Review functionality
+
+---
+
+## 🌐 Production Deployment
+
+The backend is deployed on **Render**.
+
+### Production Backend
+
+```text
+https://book-manager-week5-2-backend.onrender.com
+```
+
+### Production API Base URL
+
+```text
+https://book-manager-week5-2-backend.onrender.com/api
+```
+
+### Production Frontend
+
+```text
+https://book-manager-week5-2-frontend.onrender.com
+```
+
+The React frontend communicates with the Express backend through the production REST API.
+
+---
+
+## 🔧 Production Environment Variables
+
+The following environment variables are configured on the hosting platform:
+
+```env
+PORT
+MONGO_URI
+JWT_SECRET
+```
+
+Private credentials are not stored in the repository.
+
+---
+
+## 🔗 Repositories
+
+### Backend
+
+```text
+https://github.com/Abdulkhaliqdev2007/book-manager-week5-2-backend
+```
+
+### Frontend
+
+```text
+https://github.com/Abdulkhaliqdev2007/book-manager-week5-2--frontend
+```
+
+---
+
+## 🏗️ Architecture
+
+```text
+┌─────────────────────────┐
+│     React Frontend      │
+│      Vite + Axios       │
+└────────────┬────────────┘
+             │
+             │ REST API
+             ▼
+┌─────────────────────────┐
+│    Node.js + Express    │
+│        Backend          │
+└────────────┬────────────┘
+             │
+             │ Mongoose
+             ▼
+┌─────────────────────────┐
+│      MongoDB Atlas      │
+│        Database         │
+└─────────────────────────┘
+```
+
+---
+
+## 🎯 Week 5 Learning Goals
+
+This backend demonstrates:
+
+* REST API development
+* Full CRUD operations
+* JWT authentication
+* Protected API routes
+* Role-based access control
+* Review system
+* API validation
+* Automated backend testing
+* Happy-path testing
+* Failure-case testing
+* File upload handling
+* Security middleware
+* Rate limiting
+* CORS configuration
+* MongoDB integration
+* Production deployment
+* Frontend/backend integration
+
+---
 
 ## 👨‍💻 Author
 
@@ -232,4 +454,4 @@ https://github.com/Abdulkhaliqdev2007
 
 ---
 
-⭐ Feel free to explore the project and the connected frontend repository.
+⭐ Feel free to explore the project and its connected frontend repository.
