@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Please add a name'],
       trim: true,
     },
+
     email: {
       type: String,
       required: [true, 'Please add an email'],
@@ -18,11 +19,18 @@ const userSchema = new mongoose.Schema(
         'Please add a valid email',
       ],
     },
+
     password: {
       type: String,
       required: [true, 'Please add a password'],
       minlength: [6, 'Password must be at least 6 characters'],
-      select: false, // Don't return password in queries by default
+      select: false,
+    },
+
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
     },
   },
   {

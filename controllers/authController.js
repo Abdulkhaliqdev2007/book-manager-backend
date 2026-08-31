@@ -21,7 +21,6 @@ const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-
     if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
@@ -29,9 +28,7 @@ const signup = async (req, res) => {
       });
     }
 
-
     const userExists = await User.findOne({ email });
-
 
     if (userExists) {
       return res.status(400).json({
@@ -40,7 +37,6 @@ const signup = async (req, res) => {
       });
     }
 
-
     const salt = await bcrypt.genSalt(10);
 
     const hashedPassword = await bcrypt.hash(
@@ -48,13 +44,11 @@ const signup = async (req, res) => {
       salt
     );
 
-
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
     });
-
 
     return res.status(201).json({
       success: true,
@@ -63,10 +57,10 @@ const signup = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         token: generateToken(user._id),
       },
     });
-
 
   } catch (error) {
     return res.status(500).json({
@@ -78,15 +72,12 @@ const signup = async (req, res) => {
 };
 
 
-
 // @desc Login user
 // @route POST /api/auth/login
 // @access Public
 const login = async (req, res) => {
   try {
-
     const { email, password } = req.body;
-
 
     if (!email || !password) {
       return res.status(400).json({
@@ -95,15 +86,12 @@ const login = async (req, res) => {
       });
     }
 
-
-   const user = await User.findOne({ email }).select("+password");
-
+    const user = await User.findOne({ email }).select("+password");
 
     if (
       user &&
       (await bcrypt.compare(password, user.password))
     ) {
-
       return res.status(200).json({
         success: true,
         message: "Login successful",
@@ -111,30 +99,25 @@ const login = async (req, res) => {
           _id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
           token: generateToken(user._id),
         },
       });
-
     }
-
 
     return res.status(401).json({
       success: false,
       message: "Invalid email or password",
     });
 
-
   } catch (error) {
-
     return res.status(500).json({
       success: false,
       message: "Server Error",
       error: error.message,
     });
-
   }
 };
-
 
 
 // @desc Get current logged in user
@@ -142,28 +125,22 @@ const login = async (req, res) => {
 // @access Private
 const getMe = async (req, res) => {
   try {
-
     const user = await User.findById(req.user._id)
       .select("-password");
-
 
     return res.status(200).json({
       success: true,
       data: user,
     });
 
-
   } catch (error) {
-
     return res.status(500).json({
       success: false,
       message: "Server Error",
       error: error.message,
     });
-
   }
 };
-
 
 
 module.exports = {

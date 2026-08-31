@@ -1,45 +1,44 @@
 const express = require('express');
-const router = express.Router();
 
+const router = express.Router();
 
 const {
   getBooks,
   getBookById,
   createBook,
   updateBook,
-  deleteBook
+  deleteBook,
 } = require('../controllers/bookController');
 
-
-const { protect } = require('../middleware/auth');
-
-
+const { protect, adminOnly } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 // Public Routes
 router.get('/', getBooks);
 router.get('/:id', getBookById);
 
-
-
-// Protected Routes
-const upload = require('../middleware/upload');
-
-
-// Protected Routes
+// Admin-only Routes
 router.post(
   '/',
   protect,
+  adminOnly,
   upload.single('coverImage'),
   createBook
 );
+
 router.put(
   '/:id',
   protect,
+  adminOnly,
   upload.single('coverImage'),
   updateBook
 );
-router.delete('/:id', protect, deleteBook);
 
-
+router.delete(
+  '/:id',
+  protect,
+  adminOnly,
+  deleteBook
+);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const reviewRoutes = require('./routes/reviewRoutes');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -123,10 +124,7 @@ app.use('/uploads', (req, res, next) => {
   );
   next();
 });
-
 app.use('/uploads', express.static('uploads'));
-app.use('/uploads', express.static('uploads'));
-
 
 // ============================================
 // ROUTES
@@ -166,8 +164,11 @@ app.use(
   '/api/auth',
   authRoutes
 );
-
-
+// Review Routes
+app.use(
+  '/api/reviews',
+  reviewRoutes
+);
 
 
 
