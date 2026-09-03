@@ -14,7 +14,7 @@ const { protect, adminOnly } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 
 // Public Routes
-router.get('/', getBooks);
+router.get('/', protect, getBooks);
 router.get('/:id', getBookById);
 
 // Admin-only Routes

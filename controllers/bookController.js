@@ -5,7 +5,7 @@ const Book = require('../models/Book');
 // @access  Public
 const getBooks = async (req, res) => {
   try {
-    const books = await Book.find();
+   const books = await Book.find({ user: req.user._id });
 
     res.status(200).json(books);
 
