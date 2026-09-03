@@ -10,18 +10,16 @@ const {
   deleteBook,
 } = require('../controllers/bookController');
 
-const { protect, adminOnly } = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 
 // Public Routes
 router.get('/', protect, getBooks);
-router.get('/:id', getBookById);
+router.get('/:id', protect, getBookById);
 
-// Admin-only Routes
 router.post(
   '/',
   protect,
-  adminOnly,
   upload.single('coverImage'),
   createBook
 );
@@ -29,7 +27,6 @@ router.post(
 router.put(
   '/:id',
   protect,
-  adminOnly,
   upload.single('coverImage'),
   updateBook
 );
@@ -37,7 +34,6 @@ router.put(
 router.delete(
   '/:id',
   protect,
-  adminOnly,
   deleteBook
 );
 

@@ -8,6 +8,16 @@ jest.mock('../models/Book', () => ({
 const Book = require('../models/Book');
 const app = require('../server');
 
+jest.mock('../middleware/auth', () => ({
+  protect: (req, res, next) => {
+    req.user = {
+      _id: '507f1f77bcf86cd799439012',
+      role: 'user',
+    };
+    next();
+  },
+}));
+
 describe('Book API', () => {
 
   test('GET /api/books should return books successfully', async () => {
@@ -18,6 +28,7 @@ describe('Book API', () => {
         author: 'Robert C. Martin',
         category: 'Programming',
         price: 30,
+        user: '507f1f77bcf86cd799439012',
       },
       {
         _id: '2',
@@ -25,6 +36,7 @@ describe('Book API', () => {
         author: 'Andrew Hunt',
         category: 'Programming',
         price: 35,
+        user: '507f1f77bcf86cd799439012',
       },
     ];
 
@@ -47,6 +59,7 @@ describe('Book API', () => {
       author: 'Robert C. Martin',
       category: 'Programming',
       price: 30,
+      user: '507f1f77bcf86cd799439012',
     };
 
     Book.findById.mockResolvedValue(mockBook);
@@ -71,3 +84,4 @@ describe('Book API', () => {
   });
 
 });
+
