@@ -16,13 +16,20 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const app = express();
 
 // ============================================
+// TRUST PROXY
+// Required for Render + express-rate-limit
+// ============================================
+
+app.set('trust proxy', 1);
+
+// ============================================
 // CONNECT MONGODB
 // ============================================
 
 if (require.main === module) {
-connectDB().catch((err) => {
-console.error('MongoDB connection failed:', err.message);
-});
+  connectDB().catch((err) => {
+    console.error('MongoDB connection failed:', err.message);
+  });
 }
 
 // ============================================
@@ -30,18 +37,18 @@ console.error('MongoDB connection failed:', err.message);
 // ============================================
 
 app.use(
-helmet({
-crossOriginResourcePolicy: false,
-})
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
 );
 
 const limiter = rateLimit({
-windowMs: 15 * 60 * 1000,
-max: 100,
-message: {
-success: false,
-message: 'Too many requests, please try again later.',
-},
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    success: false,
+    message: 'Too many requests, please try again later.',
+  },
 });
 
 app.use(limiter);
@@ -51,43 +58,41 @@ app.use(limiter);
 // ============================================
 
 const allowedOrigins = [
-'http://localhost:5173',
-'http://localhost:5174',
-'http://localhost:4173',
-'http://localhost:3000',
-'https://book-manager-week5-2-frontend.onrender.com',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:4173',
+  'http://localhost:3000',
+  'https://book-manager-week5-2-frontend.onrender.com',
 ];
 
 const corsOptions = {
-origin: (origin, callback) => {
-if (!origin) {
-return callback(null, true);
-}
+  origin: (origin, callback) => {
+    // Allow requests without an Origin header
+    if (!origin) {
+      return callback(null, true);
+    }
 
-```
-if (allowedOrigins.includes(origin)) {
-  return callback(null, true);
-}
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
 
-return callback(new Error('Not allowed by CORS'));
-```
+    return callback(new Error('Not allowed by CORS'));
+  },
 
-},
+  credentials: true,
 
-credentials: true,
+  methods: [
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+    'OPTIONS',
+  ],
 
-methods: [
-'GET',
-'POST',
-'PUT',
-'DELETE',
-'OPTIONS',
-],
-
-allowedHeaders: [
-'Content-Type',
-'Authorization',
-],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+  ],
 };
 
 app.use(cors(corsOptions));
@@ -97,16 +102,16 @@ app.use(cors(corsOptions));
 // ============================================
 
 app.use(
-express.json({
-limit: '10mb',
-})
+  express.json({
+    limit: '10mb',
+  })
 );
 
 app.use(
-express.urlencoded({
-extended: true,
-limit: '10mb',
-})
+  express.urlencoded({
+    extended: true,
+    limit: '10mb',
+  })
 );
 
 // ============================================
@@ -114,31 +119,35 @@ limit: '10mb',
 // ============================================
 
 app.use('/uploads', (req, res, next) => {
-res.setHeader(
-'Cross-Origin-Resource-Policy',
-'cross-origin'
-);
-next();
+  res.setHeader(
+    'Cross-Origin-Resource-Policy',
+    'cross-origin'
+  );
+  next();
 });
 
 app.use('/uploads', express.static('uploads'));
 
 // ============================================
-// ROUTES
+// ROOT ROUTE
 // ============================================
 
 app.get('/', (req, res) => {
-res.json({
-message: 'Welcome to the Book Manager API! 📚',
-version: '1.0.0',
-endpoints: {
-books: '/api/books',
-auth: '/api/auth',
-reviews: '/api/reviews',
-dashboard: '/api/dashboard',
-},
+  res.json({
+    message: 'Welcome to the Book Manager API! 📚',
+    version: '1.0.0',
+    endpoints: {
+      books: '/api/books',
+      auth: '/api/auth',
+      reviews: '/api/reviews',
+      dashboard: '/api/dashboard',
+    },
+  });
 });
-});
+
+// ============================================
+// API ROUTES
+// ============================================
 
 // Books Routes
 app.use('/api/books', bookRoutes);
@@ -157,10 +166,10 @@ app.use('/api/dashboard', dashboardRoutes);
 // ============================================
 
 app.use((req, res) => {
-res.status(404).json({
-success: false,
-message: 'Route not found',
-});
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+  });
 });
 
 // ============================================
@@ -176,9 +185,9 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 if (require.main === module) {
-app.listen(PORT, () => {
-console.log(`Server running on port ${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 }
 
 module.exports = app;
