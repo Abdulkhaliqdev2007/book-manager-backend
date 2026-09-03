@@ -1,74 +1,95 @@
-# 📚 Book Manager – Week 5 Backend
+# 📚 Book Manager – Week 6 Backend
 
-A production-ready REST API backend for the **Book Manager** full-stack application, built with **Node.js, Express.js, MongoDB, Mongoose, JWT, Multer, Jest, and Supertest**.
+A full-stack Book Manager backend built with **Node.js, Express.js, MongoDB, Mongoose, JWT, Multer, Jest, and Supertest**.
 
-This backend provides authentication, book management, dashboard statistics, reviews, image uploads, security middleware, automated testing, and production deployment.
+The backend provides secure authentication, role-based authorization, user-specific book management, reviews, dashboard statistics, image uploads, validation, security middleware, automated testing, and production deployment.
 
 ---
 
 ## ✨ Features
 
-### 🔐 Authentication
+### 🔐 Authentication & Authorization
 
-* User registration
-* User login
-* JWT authentication
-* Protected routes
-* Current user verification
-* Secure password hashing
-* User roles (`user` / `admin`)
+- User signup and login
+- JWT-based authentication
+- Protected API routes
+- Current-user endpoint
+- Role-based access control
+- Admin-only book management
+- User-specific book data
+- Secure password hashing with bcryptjs
 
 ### 📚 Book Management
 
-* Create books
-* Get all books
-* Get a single book
-* Update books
-* Delete books
-* Search and sorting support
-* Book categories
-* Published date
-* Price and description
-* Book cover image uploads
+Full CRUD operations for books:
+
+- Create books
+- Read books
+- Update books
+- Delete books
+- Category validation
+- Price validation
+- Published-date validation
+- User ownership
+
+Each authenticated user can access only their own books.
+
+### ⭐ Review System
+
+Reviews provide a second related resource connected to books.
+
+- Create reviews
+- Read reviews
+- Update reviews
+- Delete reviews
+- Review ownership
+- Admin permissions
+- Book-based review retrieval
 
 ### 📊 Dashboard
 
-* Dashboard statistics
-* Total books
-* Total book value
-* Books by category
-* Books added over time
-* Average price by category
+The backend provides dashboard statistics for the authenticated user:
 
-### ⭐ Reviews
+- Total books
+- Total collection value
+- Books by category
+- Books over time
+- Average price by category
 
-* Create reviews
-* Get all reviews
-* Get reviews for a specific book
-* Get a single review
-* Update reviews
-* Delete reviews
-* Rating validation from 1–5
-* Prevent duplicate reviews by the same user
-* Review ownership protection
+Endpoint:
+
+```text
+GET /api/dashboard/stats
+````
 
 ### 🖼️ File Uploads
 
 * Image uploads using Multer
 * Local upload storage
-* Static serving of uploaded images
+* Uploaded image serving
+* Optional book cover images
 * Cross-origin access for uploaded resources
 
 ### 🛡️ Security
 
-* Helmet security middleware
-* CORS configuration
+* Helmet
+* CORS
 * Express rate limiting
 * JWT authentication
 * Protected routes
 * Request body size limits
 * Centralized error handling
 * Server-side validation
+* Password hashing
+
+### 🧪 Testing
+
+Backend testing is implemented with:
+
+* Jest
+* Supertest
+
+The project includes authentication, book, review, authorization, and API behavior tests.
 
 ---
 
@@ -93,10 +114,13 @@ This backend provides authentication, book management, dashboard statistics, rev
 * Jest
 * Supertest
 
+### Database
+
+* MongoDB Atlas
+
 ### Deployment
 
 * Render
-* MongoDB Atlas
 
 ---
 
@@ -111,7 +135,8 @@ backend/
 ├── controllers/
 │   ├── authController.js
 │   ├── bookController.js
-│   └── reviewController.js
+│   ├── reviewController.js
+│   └── dashboardController.js
 │
 ├── middleware/
 │   ├── auth.js
@@ -126,7 +151,8 @@ backend/
 ├── routes/
 │   ├── authRoutes.js
 │   ├── bookRoutes.js
-│   └── reviewRoutes.js
+│   ├── reviewRoutes.js
+│   └── dashboardRoutes.js
 │
 ├── __tests__/
 │   ├── auth.test.js
@@ -187,11 +213,32 @@ The backend normally runs at:
 http://localhost:5000
 ```
 
-### 6. Start production server
+### 6. Start the production server
 
 ```bash
 npm start
 ```
+
+---
+
+## 🧪 Running Tests
+
+Run the complete backend test suite with:
+
+```bash
+npm test
+```
+
+The test suite covers:
+
+* Authentication
+* Protected routes
+* Book CRUD behavior
+* Review functionality
+* Authorization
+* Invalid requests
+* API responses
+* Failure cases
 
 ---
 
@@ -215,7 +262,9 @@ PUT    /api/books/:id
 DELETE /api/books/:id
 ```
 
-Creating, updating, and deleting books require authentication and admin access.
+Book creation, updating, and deletion require authentication and appropriate admin permissions.
+
+The `GET /api/books` endpoint returns books belonging to the authenticated user.
 
 ### Reviews
 
@@ -242,21 +291,80 @@ GET /
 
 ---
 
+## 🔑 Authentication Flow
+
+```text
+User
+  │
+  ▼
+Signup / Login
+  │
+  ▼
+JWT Token
+  │
+  ▼
+Frontend stores token
+  │
+  ▼
+Authorization: Bearer <token>
+  │
+  ▼
+Auth Middleware
+  │
+  ▼
+Authenticated User
+  │
+  ├── User-specific books
+  ├── Reviews
+  └── Dashboard statistics
+```
+
+---
+
+## 👤 Role-Based Authorization
+
+The application uses roles to control access to protected operations.
+
+```text
+Authenticated User
+        │
+        ▼
+   Role Check
+        │
+   ┌────┴────┐
+   ▼         ▼
+ Admin      User
+   │
+   ├── Create books
+   ├── Update books
+   └── Delete books
+```
+
+Protected resources use JWT authentication and authorization middleware.
+
+---
+
 ## 🖼️ Image Upload Flow
 
 ```text
 React Frontend
-      ↓
+      │
+      ▼
    FormData
-      ↓
+      │
+      ▼
 POST /api/books
-      ↓
+      │
+      ▼
     Multer
-      ↓
+      │
+      ▼
    uploads/
-      ↓
+      │
+      ▼
  MongoDB stores file path
-      ↓
+      │
+      ▼
 Frontend displays cover image
 ```
 
@@ -268,177 +376,119 @@ Uploaded images are served through:
 
 ---
 
-## 🔐 Authentication
-
-The backend uses **JSON Web Tokens (JWT)**.
-
-Protected requests send the token using the Authorization header:
+## 🏗️ Architecture
 
 ```text
-Authorization: Bearer <token>
+┌──────────────────────────────┐
+│       React Frontend         │
+│        Vite + Axios          │
+└──────────────┬───────────────┘
+               │
+               │ REST API
+               ▼
+┌──────────────────────────────┐
+│      Node.js + Express       │
+│                              │
+│ Controllers                  │
+│ Routes                       │
+│ Middleware                   │
+│ Authentication               │
+│ Authorization                │
+└──────────────┬───────────────┘
+               │
+               │ Mongoose
+               ▼
+┌──────────────────────────────┐
+│        MongoDB Atlas         │
+│                              │
+│ Users                        │
+│ Books                        │
+│ Reviews                      │
+└──────────────────────────────┘
 ```
-
-Protected operations include:
-
-* Creating books
-* Updating books
-* Deleting books
-* Creating reviews
-* Updating reviews
-* Deleting reviews
 
 ---
 
-## ⭐ Review System
+## 🌐 Deployment
 
-Each review contains:
+### Backend
 
-```text
-book
-user
-rating
-comment
-createdAt
-updatedAt
-```
+The backend is deployed on Render.
 
-Ratings must be whole numbers between **1 and 5**.
-
-A user can review a particular book only once.
-
-Review updates and deletions are restricted to the review owner or an administrator.
-
----
-
-## 🧪 Automated Testing
-
-The backend uses **Jest** and **Supertest** for API testing.
-
-Run tests with:
-
-```bash
-npm test
-```
-
-The test suite covers areas including:
-
-* API information endpoint
-* Invalid routes
-* Authentication validation
-* Signup validation
-* Existing user handling
-* Login validation
-* Invalid login credentials
-* Book listing
-* Book retrieval
-* Book not found cases
-* Unauthorized book operations
-* Review functionality
-
----
-
-## 🌐 Production Deployment
-
-The backend is deployed on **Render**.
-
-### Production Backend
+Production API:
 
 ```text
 https://book-manager-week5-2-backend.onrender.com
 ```
 
-### Production API Base URL
+### Database
 
-```text
-https://book-manager-week5-2-backend.onrender.com/api
-```
-
-### Production Frontend
-
-```text
-https://book-manager-week5-2-frontend.onrender.com
-```
-
-The React frontend communicates with the Express backend through the production REST API.
-
----
-
-## 🔧 Production Environment Variables
-
-The following environment variables are configured on the hosting platform:
-
-```env
-PORT
-MONGO_URI
-JWT_SECRET
-```
-
-Private credentials are not stored in the repository.
-
----
-
-## 🔗 Repositories
-
-### Backend
-
-```text
-https://github.com/Abdulkhaliqdev2007/book-manager-week5-2-backend
-```
+MongoDB Atlas is used as the production database.
 
 ### Frontend
 
-```text
-https://github.com/Abdulkhaliqdev2007/book-manager-week5-2--frontend
-```
+The React frontend communicates with the deployed backend through the configured API URL.
 
 ---
 
-## 🏗️ Architecture
+## 🔒 Data Ownership
+
+Book data is associated with the authenticated user's MongoDB ObjectId.
+
+This prevents one user from seeing another user's books.
+
+Example:
 
 ```text
-┌─────────────────────────┐
-│     React Frontend      │
-│      Vite + Axios       │
-└────────────┬────────────┘
-             │
-             │ REST API
-             ▼
-┌─────────────────────────┐
-│    Node.js + Express    │
-│        Backend          │
-└────────────┬────────────┘
-             │
-             │ Mongoose
-             ▼
-┌─────────────────────────┐
-│      MongoDB Atlas      │
-│        Database         │
-└─────────────────────────┘
+Logged-in User
+      │
+      ▼
+req.user._id
+      │
+      ▼
+Book.find({ user: req.user._id })
+      │
+      ▼
+Only that user's books
 ```
+
+Dashboard statistics use the same ownership rule.
 
 ---
 
-## 🎯 Week 5 Learning Goals
+## 🎯 Week 6 Requirements Covered
 
-This backend demonstrates:
+This project demonstrates:
 
+* Full-stack application architecture
+* Multiple frontend views
 * REST API development
-* Full CRUD operations
+* CRUD operations
+* Two related resources
+* MongoDB persistence
 * JWT authentication
-* Protected API routes
-* Role-based access control
-* Review system
-* API validation
-* Automated backend testing
-* Happy-path testing
-* Failure-case testing
-* File upload handling
-* Security middleware
-* Rate limiting
-* CORS configuration
-* MongoDB integration
+* Protected routes
+* Role-based authorization
+* User-specific data
+* Client and server validation
+* Loading and error handling
+* Responsive frontend integration
+* File uploads
+* Dashboard statistics
+* Automated testing
 * Production deployment
-* Frontend/backend integration
+* GitHub version control
+
+---
+
+## 🚀 Stretch Features
+
+Implemented stretch features include:
+
+* 📊 Dashboard statistics
+* 🖼️ File/image uploads
+* 🔎 Search/filter functionality
+* ⭐ Review system
 
 ---
 
@@ -454,4 +504,23 @@ https://github.com/Abdulkhaliqdev2007
 
 ---
 
-⭐ Feel free to explore the project and its connected frontend repository.
+## 📌 Project Repository
+
+Backend:
+
+```text
+https://github.com/Abdulkhaliqdev2007/book-manager-week5-2-backend.git
+```
+
+Frontend:
+
+```text
+https://github.com/Abdulkhaliqdev2007/book-manager-frontend.git
+```
+
+---
+
+## 📄 License
+
+This project was created as a full-stack development capstone project.
+
