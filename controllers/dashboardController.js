@@ -6,7 +6,10 @@ const Book = require('../models/Book');
 const getDashboardStats = async (req, res) => {
   try {
     const userId = req.user._id;
-    console.log('DASHBOARD USER ID:', userId);
+   console.log('DASHBOARD USER ID:', userId);
+
+const userBooks = await Book.find({ user: userId }).select('title user');
+console.log('DASHBOARD BOOKS:', userBooks);
 
     const [
       totalBooks,
